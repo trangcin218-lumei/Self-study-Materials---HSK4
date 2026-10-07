@@ -1,3 +1,3 @@
-# HSK4 Self-Study 自学
-Static website: vocabulary flashcards 词汇, grammar 语法 (20 lessons), HSK4 writing practice 写作.
-Add content by editing `data.js`. 编辑 `data.js` 即可添加内容。
+# Tự học HSK4
+Website tĩnh để tự học HSK4: từ vựng, ngữ pháp, bài tập, luyện viết và theo dõi tiến độ hằng ngày.
+Thêm nội dung bằng cách sửa các file `vocab_data.js`, `grammar_data.js`, `data.js`.

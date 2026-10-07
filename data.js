@@ -1,26 +1,26 @@
 // SITE DATA — edit this file to add content. 网站数据：编辑此文件即可添加内容。
 // Each lesson: [number, Chinese title, English title, [grammar points]]
 const LESSONS = [
- [1,"简单的爱情","Simple love",["不仅……也/还/而且……","从来","刚","即使……也……","(在)……上"]],
- [2,"真正的朋友","A true friend",["正好","差不多","尽管","却","而"]],
- [3,"经理对我印象不错","I've made a good impression on the manager",["挺","本来","另外","首先……其次……","不管"]],
- [4,"不要太着急赚钱","Don't be anxious to make money",["以为","原来","并","按照","甚至"]],
- [5,"只买对的，不买贵的","Buy the right, not the expensive",["肯定","再说","实际","对……来说","尤其"]],
- [6,"一分钱一分货","The higher the price, the better the quality",["竟然","倍","值得","其中","(在)……下"]],
- [7,"最好的医生是自己","The best doctor is yourself",["估计","来不及","离合词重叠","要是","既……又/也/还……"]],
- [8,"生活中不缺少美","Beauty is not rare in life",["使","只要","可是","因此","往往"]],
- [9,"阳光总在风雨后","The sun will shine again after the storm",["难道","通过","可是","结果","上"]],
- [10,"幸福的标准","Standards of happiness",["不过","确实","在……看来","由于","比如"]],
- [11,"读书好，读好书，好读书","It's good to read; read good books",["连","否则","无论","然而","同时"]],
- [12,"用心发现世界","Discover the world with your heart",["并且","再……也……","对于","名量词重叠","相反"]],
- [13,"喝着茶看京剧","Drink tea while watching Beijing opera",["大概","偶尔","由","进行","随着"]],
- [14,"保护地球母亲","Protect our Mother Earth",["够","以","既然","于是","什么的"]],
- [15,"教育孩子的艺术","The art of educating children",["想起来","弄","千万","来","左右"]],
- [16,"生活可以更美好","Life can be better",["可","恐怕","到底","拿……来说","救"]],
- [17,"人与自然","Humans and nature",["倒","干","趟","为了……而……","仍然"]],
- [18,"科技与世界","Science, technology and the world",["是否","受不了","接着","除此以外","把……叫作……"]],
- [19,"生活的味道","Taste of life",["疑问代词活用表示任指","上","出来","总的来说","在于"]],
- [20,"路上的风景","The view along the way",["V+着+V+着","一……就……","究竟","起来","V+起"]]
+ [1,"简单的爱情","Tình yêu giản đơn",["不仅……也/还/而且……","从来","刚","即使……也……","(在)……上"]],
+ [2,"真正的朋友","Người bạn chân chính",["正好","差不多","尽管","却","而"]],
+ [3,"经理对我印象不错","Giám đốc có ấn tượng tốt về tôi",["挺","本来","另外","首先……其次……","不管"]],
+ [4,"不要太着急赚钱","Đừng quá vội kiếm tiền",["以为","原来","并","按照","甚至"]],
+ [5,"只买对的，不买贵的","Chỉ mua đồ đúng, không mua đồ đắt",["肯定","再说","实际","对……来说","尤其"]],
+ [6,"一分钱一分货","Tiền nào của nấy",["竟然","倍","值得","其中","(在)……下"]],
+ [7,"最好的医生是自己","Bác sĩ giỏi nhất là chính mình",["估计","来不及","离合词重叠","要是","既……又/也/还……"]],
+ [8,"生活中不缺少美","Cuộc sống không thiếu cái đẹp",["使","只要","可是","因此","往往"]],
+ [9,"阳光总在风雨后","Nắng luôn đến sau mưa gió",["难道","通过","可是","结果","上"]],
+ [10,"幸福的标准","Tiêu chuẩn của hạnh phúc",["不过","确实","在……看来","由于","比如"]],
+ [11,"读书好，读好书，好读书","Đọc sách tốt, đọc sách hay, thích đọc sách",["连","否则","无论","然而","同时"]],
+ [12,"用心发现世界","Dùng tâm khám phá thế giới",["并且","再……也……","对于","名量词重叠","相反"]],
+ [13,"喝着茶看京剧","Vừa uống trà vừa xem kinh kịch",["大概","偶尔","由","进行","随着"]],
+ [14,"保护地球母亲","Bảo vệ Trái Đất mẹ",["够","以","既然","于是","什么的"]],
+ [15,"教育孩子的艺术","Nghệ thuật dạy dỗ con",["想起来","弄","千万","来","左右"]],
+ [16,"生活可以更美好","Cuộc sống có thể tốt đẹp hơn",["可","恐怕","到底","拿……来说","救"]],
+ [17,"人与自然","Con người và thiên nhiên",["倒","干","趟","为了……而……","仍然"]],
+ [18,"科技与世界","Khoa học công nghệ và thế giới",["是否","受不了","接着","除此以外","把……叫作……"]],
+ [19,"生活的味道","Hương vị cuộc sống",["疑问代词活用表示任指","上","出来","总的来说","在于"]],
+ [20,"路上的风景","Phong cảnh trên đường",["V+着+V+着","一……就……","究竟","起来","V+起"]]
 ];
 // Vocabulary: [word, pinyin, part of speech, English meaning, lesson]. SAMPLE — add more in the same format.
 const VOCAB = [
