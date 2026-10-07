@@ -1,5 +1,5 @@
-// DỮ LIỆU CỦA WEBSITE — bạn chỉ cần sửa file này để thêm nội dung.
-// Mỗi bài: [số bài, tiêu đề tiếng Trung, tiêu đề tiếng Anh, [các điểm ngữ pháp]]
+// SITE DATA — edit this file to add content. 网站数据：编辑此文件即可添加内容。
+// Each lesson: [number, Chinese title, English title, [grammar points]]
 const LESSONS = [
  [1,"简单的爱情","Simple love",["不仅……也/还/而且……","从来","刚","即使……也……","(在)……上"]],
  [2,"真正的朋友","A true friend",["正好","差不多","尽管","却","而"]],
@@ -22,21 +22,21 @@ const LESSONS = [
  [19,"生活的味道","Taste of life",["疑问代词活用表示任指","上","出来","总的来说","在于"]],
  [20,"路上的风景","The view along the way",["V+着+V+着","一……就……","究竟","起来","V+起"]]
 ];
-// Từ vựng: [từ, pinyin, từ loại, nghĩa, số bài]. Đây là MẪU — hãy thêm tiếp theo cùng định dạng.
+// Vocabulary: [word, pinyin, part of speech, English meaning, lesson]. SAMPLE — add more in the same format.
 const VOCAB = [
- ["不仅","bùjǐn","conj.","không chỉ",1],
- ["差不多","chàbuduō","adv.","gần như, xấp xỉ",2],
- ["超过","chāoguò","v.","vượt quá",1],
- ["成功","chénggōng","v./adj.","thành công",1],
- ["抽烟","chōu yān","v.","hút thuốc",1],
- ["出现","chūxiàn","v.","xuất hiện",1],
- ["刚","gāng","adv.","vừa mới",1],
- ["从来","cónglái","adv.","từ trước đến nay",1],
- ["尽管","jǐnguǎn","conj.","mặc dù",2],
- ["值得","zhídé","v.","đáng",6]
+ ["不仅","bùjǐn","conj.","not only",1],
+ ["差不多","chàbuduō","adv.","almost; about the same",2],
+ ["超过","chāoguò","v.","to exceed",1],
+ ["成功","chénggōng","v./adj.","to succeed; success",1],
+ ["抽烟","chōu yān","v.","to smoke",1],
+ ["出现","chūxiàn","v.","to appear",1],
+ ["刚","gāng","adv.","just (now)",1],
+ ["从来","cónglái","adv.","all along; (从来不) never",1],
+ ["尽管","jǐnguǎn","conj.","although; even though",2],
+ ["值得","zhídé","v.","to be worth",6]
 ];
-// Phần Viết — đề tự soạn theo dạng đề HSK4.
-// Phần 1: sắp xếp các cụm từ thành câu hoàn chỉnh. Phần 2: viết câu có từ cho sẵn.
+// Writing — original practice items in HSK4 format.
+// Part 1: arrange the words into a sentence. Part 2: write a sentence using the given word.
 const WRITE1 = [
  {w:["我","刚","来到","北京"],a:"我刚来到北京"},
  {w:["他","从来","不","迟到"],a:"他从来不迟到"},

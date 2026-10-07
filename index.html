@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="vi"><head><meta charset="utf-8">
+<html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HSK4 Tự học</title>
+<title>HSK4 Self-Study 自学</title>
 <style>
 body{font-family:system-ui,"Noto Sans SC",sans-serif;max-width:760px;margin:0 auto;padding:16px;line-height:1.6;color:#222}
 nav button{padding:8px 14px;margin:0 4px 8px 0;border:1px solid #c33;background:#fff;color:#c33;border-radius:6px;cursor:pointer}
@@ -13,8 +13,8 @@ table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #eee;pad
 .ok{color:#080}.no{color:#c00} .item{margin:18px 0;padding-bottom:12px;border-bottom:1px dashed #ccc}
 @media(prefers-color-scheme:dark){body{background:#181818;color:#eee}.chip{background:#333}td,th{border-color:#333}}
 </style></head><body>
-<h1>HSK4 Tự học</h1>
-<nav><button onclick="show('vocab')">Từ vựng</button><button onclick="show('gram')">Ngữ pháp</button><button onclick="show('write')">Viết</button></nav>
+<h1>HSK4 Self-Study 自学</h1>
+<nav><button onclick="show('vocab')">Vocabulary 词汇</button><button onclick="show('gram')">Grammar 语法</button><button onclick="show('write')">Writing 写作</button></nav>
 <section id="vocab"></section><section id="gram" hidden></section><section id="write" hidden></section>
 <script src="data.js"></script>
 <script>
@@ -25,16 +25,16 @@ let vi=0,flip=false,vl=0;
 function vList(){return VOCAB.filter(v=>!vl||v[4]==vl)}
 function vRender(){
  const L=vList(),v=L[vi%Math.max(L.length,1)]||["—","","","",0];
- $('vocab').innerHTML=`<label>Bài: <select onchange="vl=+this.value;vi=0;flip=false;vRender()"><option value="0">Tất cả</option>${LESSONS.map(l=>`<option value="${l[0]}" ${vl==l[0]?'selected':''}>Bài ${l[0]}</option>`)}</select></label>
- <p>Thẻ ${L.length?vi%L.length+1:0}/${L.length} — bấm vào thẻ để lật</p>
+ $('vocab').innerHTML=`<label>Lesson 课: <select onchange="vl=+this.value;vi=0;flip=false;vRender()"><option value="0">All 全部</option>${LESSONS.map(l=>`<option value="${l[0]}" ${vl==l[0]?'selected':''}>Lesson ${l[0]} 第${l[0]}课</option>`)}</select></label>
+ <p>Card ${L.length?vi%L.length+1:0}/${L.length} — click the card to flip 点击翻面</p>
  <div class="card" onclick="flip=!flip;vRender()">${flip?`${v[1]}<br><small>${v[2]} ${v[3]}</small>`:v[0]}</div>
- <p><button onclick="vi=(vi+1)%Math.max(L.length,1);flip=false;vRender()">Từ tiếp theo →</button></p>
- <table><tr><th>Từ</th><th>Pinyin</th><th>Loại</th><th>Nghĩa</th><th>Bài</th></tr>${L.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+ <p><button onclick="vi=(vi+1)%Math.max(L.length,1);flip=false;vRender()">Next word 下一个 →</button></p>
+ <table><tr><th>Word 词</th><th>Pinyin 拼音</th><th>POS 词性</th><th>Meaning 意思</th><th>Lesson 课</th></tr>${L.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
 }
 // ---- Ngữ pháp ----
 function gRender(q=''){
- $('gram').innerHTML=`<input placeholder="Tìm điểm ngữ pháp…" oninput="gRender(this.value)" value="${q}" autofocus>`+
- LESSONS.filter(l=>!q||l[3].join(' ').includes(q)||l[1].includes(q)).map(l=>`<h3>Bài ${l[0]}: ${l[1]} <small>${l[2]}</small></h3><ol>${l[3].map(g=>`<li>${g}</li>`).join('')}</ol>`).join('');
+ $('gram').innerHTML=`<input placeholder="Search grammar 搜索语法…" oninput="gRender(this.value)" value="${q}" autofocus>`+
+ LESSONS.filter(l=>!q||l[3].join(' ').includes(q)||l[1].includes(q)).map(l=>`<h3>Lesson ${l[0]} 第${l[0]}课: ${l[1]} <small>${l[2]}</small></h3><ol>${l[3].map(g=>`<li>${g}</li>`).join('')}</ol>`).join('');
  if(q)$('gram').querySelector('input').focus();
 }
 // ---- Viết ----
@@ -43,11 +43,11 @@ const strip=s=>s.replace(/[，。？！、\s]/g,'');
 let cur=[];
 function wRender(){
  cur=WRITE1.map(()=>[]);
- $('write').innerHTML=`<h2>Phần 1: Sắp xếp thành câu</h2>`+WRITE1.map((q,i)=>`<div class="item"><div id="p${i}">${shuf(q.w).map(w=>`<span class="chip" onclick="pick(${i},this,'${w}')">${w}</span>`).join('')}</div><div class="out" id="o${i}"></div><button onclick="chk(${i})">Kiểm tra</button> <button onclick="rst(${i})">Làm lại</button> <span id="r${i}"></span></div>`).join('')+
- `<h2>Phần 2: Viết câu với từ cho sẵn</h2>`+WRITE2.map((q,i)=>`<div class="item"><b style="font-size:22px">${q.w}</b><br><textarea rows="2" style="width:100%;font-size:18px"></textarea><br><button onclick="this.nextElementSibling.hidden=false">Xem câu mẫu</button><span hidden> ${q.s}</span></div>`).join('');
+ $('write').innerHTML=`<h2>Part 1: Arrange into a sentence 完成句子</h2>`+WRITE1.map((q,i)=>`<div class="item"><div id="p${i}">${shuf(q.w).map(w=>`<span class="chip" onclick="pick(${i},this,'${w}')">${w}</span>`).join('')}</div><div class="out" id="o${i}"></div><button onclick="chk(${i})">Check 检查</button> <button onclick="rst(${i})">Reset 重做</button> <span id="r${i}"></span></div>`).join('')+
+ `<h2>Part 2: Write a sentence with the word 用词造句</h2>`+WRITE2.map((q,i)=>`<div class="item"><b style="font-size:22px">${q.w}</b><br><textarea rows="2" style="width:100%;font-size:18px"></textarea><br><button onclick="this.nextElementSibling.hidden=false">Show model answer 参考答案</button><span hidden> ${q.s}</span></div>`).join('');
 }
 function pick(i,el,w){cur[i].push(w);el.style.visibility='hidden';$('o'+i).textContent=cur[i].join('')}
 function rst(i){cur[i]=[];$('o'+i).textContent='';$('r'+i).textContent='';$('p'+i).querySelectorAll('.chip').forEach(c=>c.style.visibility='visible')}
-function chk(i){const ok=strip(cur[i].join(''))==strip(WRITE1[i].a);$('r'+i).innerHTML=ok?'<span class="ok">✔ Đúng</span>':`<span class="no">✘ Đáp án: ${WRITE1[i].a}。</span>`}
+function chk(i){const ok=strip(cur[i].join(''))==strip(WRITE1[i].a);$('r'+i).innerHTML=ok?'<span class="ok">✔ Correct 正确</span>':`<span class="no">✘ Answer 答案: ${WRITE1[i].a}。</span>`}
 vRender();gRender();wRender();show('vocab');
 </script></body></html>
