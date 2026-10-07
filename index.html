@@ -1,53 +1,91 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HSK4 Self-Study 自学</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HSK4 Practice 练习</title>
 <style>
-body{font-family:system-ui,"Noto Sans SC",sans-serif;max-width:760px;margin:0 auto;padding:16px;line-height:1.6;color:#222}
-nav button{padding:8px 14px;margin:0 4px 8px 0;border:1px solid #c33;background:#fff;color:#c33;border-radius:6px;cursor:pointer}
-nav button.on{background:#c33;color:#fff}
-.card{border:1px solid #ddd;border-radius:10px;padding:20px;text-align:center;font-size:28px;cursor:pointer;min-height:90px}
-.chip{display:inline-block;padding:6px 12px;margin:4px;border:1px solid #888;border-radius:6px;cursor:pointer;font-size:20px;background:#f7f7f7}
-.out{min-height:44px;border-bottom:2px solid #c33;font-size:22px;margin:8px 0}
-table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}
-.ok{color:#080}.no{color:#c00} .item{margin:18px 0;padding-bottom:12px;border-bottom:1px dashed #ccc}
-@media(prefers-color-scheme:dark){body{background:#181818;color:#eee}.chip{background:#333}td,th{border-color:#333}}
+:root{--bg:#fff3f4;--card:#fff;--tx:#2b2b3a;--mut:#8a8a9a;--pk:#f43f5e;--bd:#fbd5db}
+body.dark{--bg:#17141c;--card:#231f2b;--tx:#f1eef7;--mut:#a9a3b8;--bd:#3a3347}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,"Noto Sans SC",sans-serif;padding-bottom:90px}
+header{display:flex;gap:8px;align-items:center;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--bd);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.logo{font-weight:800;font-size:1.3rem;margin-right:auto}.logo b{color:var(--pk)}
+button,select,input,textarea{font:inherit;color:inherit}
+.pill{border:1px solid var(--bd);background:var(--bg);border-radius:12px;padding:6px 12px;cursor:pointer}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:18px;margin-bottom:14px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.streak{background:linear-gradient(160deg,#ffa41b,#ff7a00);color:#fff;border:0}.streak h2{font-size:3rem;margin:0}
+.wk{display:flex;justify-content:space-between;font-size:.75rem;margin-top:14px}.wk i{display:block;width:26px;height:26px;border-radius:50%;background:#ffffff55;margin:4px auto}.wk i.on{background:#fff}
+.bar{height:10px;background:#e6e6ea;border-radius:9px;overflow:hidden}.bar div{height:100%;background:linear-gradient(90deg,#f43f5e,#fb923c)}
+.stat{display:flex;justify-content:space-between;background:var(--bg);border-radius:14px;padding:12px 16px;margin-bottom:8px;font-weight:600}.stat b{font-size:1.6rem}
+.tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.tile{cursor:pointer;font-weight:700;font-size:1.1rem}
+.cta{background:#7c4dff;color:#fff;border:0;border-radius:12px;padding:10px 18px;font-weight:700;cursor:pointer}
+.fc{font-size:2.6rem;text-align:center;padding:50px 10px;cursor:pointer}
+.row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}.row .w{font-size:1.4rem;min-width:90px}.row .m{flex:1}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 14px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);cursor:pointer}
+.ok{background:#c9f5d9!important}.no{background:#ffd3d3!important}
+input,textarea,select{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:8px;width:100%;margin:4px 0}
+nav{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:6px;display:flex;gap:2px;box-shadow:0 6px 24px #0002;max-width:96vw;overflow-x:auto}
+nav button{border:0;background:none;border-radius:16px;padding:6px 10px;cursor:pointer;color:var(--mut);font-size:.75rem;white-space:nowrap}nav button span{display:block;font-size:1.3rem}
+nav button.on{background:linear-gradient(135deg,#f43f5e,#fb7185);color:#fff}
 </style></head><body>
-<h1>HSK4 Self-Study 自学</h1>
-<nav><button onclick="show('vocab')">Vocabulary 词汇</button><button onclick="show('gram')">Grammar 语法</button><button onclick="show('write')">Writing 写作</button></nav>
-<section id="vocab"></section><section id="gram" hidden></section><section id="write" hidden></section>
-<script src="data.js"></script>
+<header><div class="logo">📖 HSK4 <b>Practice 练习</b></div>
+<button class="pill" onclick="S.dark=!S.dark;save();paint()">🎨</button>
+<span class="pill"><a onclick="fs(-10)" style="cursor:pointer">A−</a> <span id="fz"></span> <a onclick="fs(10)" style="cursor:pointer">A+</a></span>
+<select class="pill" id="unit" style="width:auto" onchange="U=this.value;pos=0;go(V)"></select></header>
+<main id="m"></main><nav id="nav"></nav>
+<script src="data.js"></script><script src="vocab_data.js"></script><script src="grammar_data.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-function show(t){['vocab','gram','write'].forEach((x,i)=>{$(x).hidden=x!=t;document.querySelectorAll('nav button')[i].className=x==t?'on':''})}
-// ---- Từ vựng ----
-let vi=0,flip=false,vl=0;
-function vList(){return VOCAB.filter(v=>!vl||v[4]==vl)}
-function vRender(){
- const L=vList(),v=L[vi%Math.max(L.length,1)]||["—","","","",0];
- $('vocab').innerHTML=`<label>Lesson 课: <select onchange="vl=+this.value;vi=0;flip=false;vRender()"><option value="0">All 全部</option>${LESSONS.map(l=>`<option value="${l[0]}" ${vl==l[0]?'selected':''}>Lesson ${l[0]} 第${l[0]}课</option>`)}</select></label>
- <p>Card ${L.length?vi%L.length+1:0}/${L.length} — click the card to flip 点击翻面</p>
- <div class="card" onclick="flip=!flip;vRender()">${flip?`${v[1]}<br><small>${v[2]} ${v[3]}</small>`:v[0]}</div>
- <p><button onclick="vi=(vi+1)%Math.max(L.length,1);flip=false;vRender()">Next word 下一个 →</button></p>
- <table><tr><th>Word 词</th><th>Pinyin 拼音</th><th>POS 词性</th><th>Meaning 意思</th><th>Lesson 课</th></tr>${L.map(x=>`<tr>${x.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
-}
-// ---- Ngữ pháp ----
-function gRender(q=''){
- $('gram').innerHTML=`<input placeholder="Search grammar 搜索语法…" oninput="gRender(this.value)" value="${q}" autofocus>`+
- LESSONS.filter(l=>!q||l[3].join(' ').includes(q)||l[1].includes(q)).map(l=>`<h3>Lesson ${l[0]} 第${l[0]}课: ${l[1]} <small>${l[2]}</small></h3><ol>${l[3].map(g=>`<li>${g}</li>`).join('')}</ol>`).join('');
- if(q)$('gram').querySelector('input').focus();
-}
-// ---- Viết ----
-const shuf=a=>[...a].sort(()=>Math.random()-.5);
-const strip=s=>s.replace(/[，。？！、\s]/g,'');
-let cur=[];
-function wRender(){
- cur=WRITE1.map(()=>[]);
- $('write').innerHTML=`<h2>Part 1: Arrange into a sentence 完成句子</h2>`+WRITE1.map((q,i)=>`<div class="item"><div id="p${i}">${shuf(q.w).map(w=>`<span class="chip" onclick="pick(${i},this,'${w}')">${w}</span>`).join('')}</div><div class="out" id="o${i}"></div><button onclick="chk(${i})">Check 检查</button> <button onclick="rst(${i})">Reset 重做</button> <span id="r${i}"></span></div>`).join('')+
- `<h2>Part 2: Write a sentence with the word 用词造句</h2>`+WRITE2.map((q,i)=>`<div class="item"><b style="font-size:22px">${q.w}</b><br><textarea rows="2" style="width:100%;font-size:18px"></textarea><br><button onclick="this.nextElementSibling.hidden=false">Show model answer 参考答案</button><span hidden> ${q.s}</span></div>`).join('');
-}
-function pick(i,el,w){cur[i].push(w);el.style.visibility='hidden';$('o'+i).textContent=cur[i].join('')}
-function rst(i){cur[i]=[];$('o'+i).textContent='';$('r'+i).textContent='';$('p'+i).querySelectorAll('.chip').forEach(c=>c.style.visibility='visible')}
-function chk(i){const ok=strip(cur[i].join(''))==strip(WRITE1[i].a);$('r'+i).innerHTML=ok?'<span class="ok">✔ Correct 正确</span>':`<span class="no">✘ Answer 答案: ${WRITE1[i].a}。</span>`}
-vRender();gRender();wRender();show('vocab');
+let S={learned:{},mine:[],notes:{},days:[],dark:false,font:100};
+try{Object.assign(S,JSON.parse(localStorage.getItem('hsk4')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('hsk4',JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let U='all',V='home',pos=0,flip=false,q=null,sc=[0,0],cur=[];
+const all=()=>[...VOCAB,...S.mine.map(x=>x.slice())].map(a=>({w:a[0],p:a[1],t:a[2],m:a[3],u:+a[4]}));
+const pool=()=>{const p=all().filter(v=>U=='all'||v.u==U);return p.length?p:all()};
+const note=()=>(U!='all'&&!all().some(v=>v.u==U))?`<p style="color:var(--mut);font-size:.85rem">Vocabulary is not split by lesson yet — showing the full word list. 词汇尚未按课分类，显示全部。</p>`:'';
+const day=()=>new Date().toISOString().slice(0,10);
+const touch=()=>{if(!S.days.includes(day()))S.days.push(day());save()};
+const streak=()=>{let n=0,d=new Date();while(S.days.includes(d.toISOString().slice(0,10))){n++;d.setDate(d.getDate()-1)}return n};
+const speak=w=>{try{const u=new SpeechSynthesisUtterance(w);u.lang='zh-CN';speechSynthesis.speak(u)}catch(e){}};
+function fs(d){S.font=Math.max(80,Math.min(160,S.font+d));save();paint()}
+const NAV=[['home','🏠','Home 首页'],['vocab','📘','Vocab 词汇'],['cards','🃏','Cards 卡片'],['gram','🧩','Grammar 语法'],['quiz','🧠','Quiz 测验'],['write','✍️','Write 写作'],['notes','📝','Notes 笔记'],['add','➕','Add 添加'],['acct','👤','Account 账户']];
+function paint(){document.body.className=S.dark?'dark':'';document.documentElement.style.fontSize=S.font+'%';$('fz').textContent=S.font+'%';
+ $('unit').innerHTML='<option value="all">All units 全部</option><option value="0">Word list 词表</option>'+LESSONS.map(l=>`<option value="${l[0]}">Unit ${l[0]}: ${l[1]} — ${l[2]}</option>`).join('');$('unit').value=U;
+ $('nav').innerHTML=NAV.map(n=>`<button class="${V==n[0]?'on':''}" onclick="go('${n[0]}')"><span>${n[1]}</span>${n[2]}</button>`).join('')}
+function go(v){V=v;paint();R[v]()}
+const lc=()=>all().filter(v=>S.learned[v.w]).length;
+const R={
+home(){const A=all(),L=lc(),wk=(new Date().getDay()+6)%7,mon=new Date();mon.setDate(mon.getDate()-wk);
+ const QUO=["语言是看世界的另一扇窗。 — Another language is another way of seeing life.","千里之行，始于足下。 — A journey of a thousand miles begins with a single step.","学而时习之，不亦说乎？ — Is it not a pleasure to learn and practise?"];
+ $('m').innerHTML=`<div class="grid"><div class="card"><h3>Your Study Corner 学习角</h3><small>Lv.${1+Math.floor(L/10)} · ${L%10}/10 words</small><div class="bar"><div style="width:${L%10*10}%"></div></div><p style="color:var(--mut)">“${QUO[new Date().getDate()%3]}”</p></div>
+ <div class="card streak"><small>🔥 STUDY STREAK 连续学习</small><h2>${streak()} <small style="font-size:1rem">days</small></h2><div class="wk">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map((d,i)=>{const x=new Date(mon);x.setDate(mon.getDate()+i);return`<div>${d}<i class="${S.days.includes(x.toISOString().slice(0,10))?'on':''}"></i></div>`}).join('')}</div></div>
+ <div class="card"><div class="stat">Total words 总词数<b>${A.length}</b></div><div class="stat">Learned 已会<b style="color:#0a8">${L}</b></div><div class="stat">Not yet 未会<b style="color:#c70">${A.length-L}</b></div></div></div>
+ <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><small style="color:#7c4dff;font-weight:700">STUDY WITH FRIENDS 与朋友同学</small><h2 style="margin:4px 0">🏆 Weekly leaderboard 周排行榜</h2><small style="color:var(--mut)">Needs a server — not available in this offline version. 需要服务器，离线版暂不可用。</small></div><button class="cta" disabled style="opacity:.5">Log in 登录</button></div>
+ <div class="tiles">${[['cards','🃏 Flashcards 闪卡'],['quiz','🧠 Quiz 测验'],['notes','📝 Notes 笔记'],['add','✨ Add word 添加']].map(t=>`<div class="card tile" onclick="go('${t[0]}')">${t[1]}</div>`).join('')}</div>`},
+vocab(){const P=pool();vmax=60;$('m').innerHTML=`<div class="card"><input id="s" placeholder="Search 搜索 (汉字 / pinyin / meaning)…" oninput="vmax=60;vl()"><div id="vl"></div></div>`;vl()},
+cards(){const P=pool();if(!P.length)return $('m').innerHTML=EMPTY();const v=P[pos%P.length];
+ $('m').innerHTML=`<div class="card"><small>${pos%P.length+1}/${P.length} · click to flip 点击翻面</small><div class="fc" onclick="flip=!flip;go('cards')">${flip?`${v.p}<br><small>${v.t||''} ${esc(v.m)}</small>`:v.w}</div>
+ <button class="cta" onclick="speak('${v.w}')">🔊</button> <button class="cta" style="background:#0a8" onclick="S.learned['${v.w}']=1;touch();pos++;flip=false;go('cards')">I know it ✓ 会了</button> <button class="cta" style="background:#999" onclick="pos++;flip=false;go('cards')">Again 再来</button></div>`},
+gram(){const q=($('gq')||{value:''}).value||'';$('m').innerHTML=`<div class="card"><input id="gq" placeholder="Search grammar 搜索语法…" oninput="gs()" value="${esc(q)}"></div><div id="gl"></div>`;gs()},
+quiz(){const P=pool();if(P.length<4)return $('m').innerHTML=EMPTY(4);const v=P[Math.floor(Math.random()*P.length)];
+ const o=[v,...P.filter(x=>x!=v).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);q=v;
+ $('m').innerHTML=`<div class="card"><small>Score 得分 ${sc[0]}/${sc[1]}</small><div class="fc" style="padding:24px">${v.w}<br><small>${v.p}</small></div>${o.map(x=>`<button class="opt" onclick="ans(this,${x==v})">${esc(x.m)}</button>`).join('')}<button class="cta" onclick="go('quiz')">Next 下一题 →</button></div>`},
+write(){cur=WRITE1.map(()=>[]);const sh=a=>[...a].sort(()=>Math.random()-.5);
+ $('m').innerHTML=`<div class="card"><h3>Part 1 完成句子 — arrange into a sentence</h3>`+WRITE1.map((x,i)=>`<div class="row" style="display:block"><div id="p${i}">${sh(x.w).map(w=>`<button class="pill" style="font-size:1.2rem;margin:3px" onclick="pk(${i},this)">${w}</button>`).join('')}</div><div id="o${i}" style="min-height:36px;border-bottom:2px solid var(--pk);font-size:1.3rem"></div><button class="pill" onclick="ck(${i})">Check 检查</button> <button class="pill" onclick="go('write')">Reset 重做</button> <span id="r${i}"></span></div>`).join('')+`</div><div class="card"><h3>Part 2 用词造句 — write a sentence</h3>`+WRITE2.map(x=>`<div class="row" style="display:block"><b style="font-size:1.4rem">${x.w}</b><textarea rows="2"></textarea><button class="pill" onclick="this.nextElementSibling.hidden=false">Model answer 参考答案</button><span hidden> ${x.s}</span></div>`).join('')+'</div>'},
+notes(){const k=U=='all'?'general':U;$('m').innerHTML=`<div class="card"><h3>Notes 笔记 — ${k=='general'?'General':'Unit '+k}</h3><textarea rows="12" oninput="S.notes['${k}']=this.value;save()">${esc(S.notes[k]||'')}</textarea></div>`},
+add(){$('m').innerHTML=`<div class="card"><h3>Add word 添加单词</h3><input id="a1" placeholder="汉字 word"><input id="a2" placeholder="pinyin"><input id="a3" placeholder="English meaning"><input id="a4" type="number" min="0" max="20" placeholder="Unit 0–20" value="${U=='all'?0:U}"><button class="cta" onclick="addw()">Add 添加</button></div>
+ <div class="card"><h3>Bulk import 批量导入</h3><small>One word per line: 汉字,pinyin,meaning,unit (comma or tab)</small><textarea id="bulk" rows="8"></textarea><button class="cta" onclick="bulk()">Import 导入</button></div>`},
+acct(){$('m').innerHTML=`<div class="card"><h3>Account 账户</h3><p>Words 词: ${all().length} · Learned 已会: ${lc()} · Streak 连续: ${streak()} days</p><button class="cta" onclick="exp()">Export progress 导出</button> <button class="cta" style="background:#c33" onclick="if(confirm('Reset all progress? 确定重置？')){localStorage.removeItem('hsk4');location.reload()}">Reset 重置</button><p style="color:var(--mut)">Progress is saved in this browser only. 进度仅保存在此浏览器。</p></div>`}};
+const EMPTY=(n=1)=>`<div class="card">No words here yet (need ${n}+). Pick “Starter words” above, or add words in <a href="#" onclick="go('add');return false">Add 添加</a>. 此单元暂无单词。</div>`;
+function gs(){const s=$('gq').value.toLowerCase();const items=GRAMMAR.filter(g=>(U=='all'||U==g[0])&&(!s||(g[1]+g[2]).toLowerCase().includes(s)));let last=0,o='';
+ items.forEach(g=>{if(g[0]!=last){last=g[0];const l=LESSONS[g[0]-1];o+=`<h3 style="margin:18px 4px 6px">Unit ${l[0]}: ${l[1]} <small style="color:var(--mut)">${l[2]}</small></h3>`}
+  o+=`<details class="card" style="padding:12px 18px;margin-bottom:8px"><summary style="font-weight:700;font-size:1.15rem;cursor:pointer">${esc(g[1])}</summary><div style="white-space:pre-wrap;line-height:1.8;margin-top:8px">${esc(g[2])}</div></details>`});
+ $('gl').innerHTML=o||EMPTY()}
+let vmax=60;
+function vl(){const s=($('s')||{value:''}).value.toLowerCase();const F=pool().filter(v=>(v.w+v.p+v.m+v.t).toLowerCase().includes(s));$('vl').innerHTML=note()+`<small>${F.length} words 词</small>`+F.slice(0,vmax).map(v=>`<div class="row"><span class="w">${v.w}</span><span class="m">${v.p}<br><small>${v.t||''} ${esc(v.m)}</small></span><button class="pill" onclick="speak('${v.w}')">🔊</button><button class="pill" onclick="S.learned['${v.w}']=!S.learned['${v.w}'];touch();vl()">${S.learned[v.w]?'✅':'⬜'}</button></div>`).join('')+(F.length>vmax?`<p><button class="cta" onclick="vmax+=60;vl()">Show more 显示更多</button></p>`:'')}
+function ans(b,ok){sc[1]++;if(ok){sc[0]++;S.learned[q.w]=1}b.classList.add(ok?'ok':'no');touch();document.querySelectorAll('.opt').forEach(x=>x.disabled=true)}
+function pk(i,b){cur[i].push(b.textContent);b.style.visibility='hidden';$('o'+i).textContent=cur[i].join('')}
+function ck(i){const f=s=>s.replace(/[，。？！、\s]/g,'');$('r'+i).innerHTML=f(cur[i].join(''))==f(WRITE1[i].a)?'✔ Correct 正确':`✘ ${WRITE1[i].a}。`;touch()}
+function addw(){const a=['a1','a2','a3'].map(i=>$(i).value.trim());if(!a[0]||!a[2])return alert('Word and meaning required 请填写');S.mine.push([a[0],a[1],'',a[2],+$('a4').value||0]);save();alert('Added 已添加');go('add')}
+function bulk(){let n=0;$('bulk').value.split('\n').forEach(l=>{const c=l.split(/[,\t]/).map(x=>x.trim());if(c[0]&&c[2]){S.mine.push([c[0],c[1]||'','',c[2],+c[3]||0]);n++}});save();alert(n+' words added 已导入');go('add')}
+function exp(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:'application/json'}));a.download='hsk4-progress.json';a.click()}
+paint();go('home');
 </script></body></html>

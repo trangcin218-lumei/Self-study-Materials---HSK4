@@ -26,10 +26,10 @@ const LESSONS = [
 const VOCAB = [
  ["不仅","bùjǐn","conj.","not only",1],
  ["差不多","chàbuduō","adv.","almost; about the same",2],
- ["超过","chāoguò","v.","to exceed",1],
- ["成功","chénggōng","v./adj.","to succeed; success",1],
- ["抽烟","chōu yān","v.","to smoke",1],
- ["出现","chūxiàn","v.","to appear",1],
+ ["超过","chāoguò","v.","to exceed",0],
+ ["成功","chénggōng","v./adj.","to succeed; success",0],
+ ["抽烟","chōu yān","v.","to smoke",0],
+ ["出现","chūxiàn","v.","to appear",0],
  ["刚","gāng","adv.","just (now)",1],
  ["从来","cónglái","adv.","all along; (从来不) never",1],
  ["尽管","jǐnguǎn","conj.","although; even though",2],
@@ -50,3 +50,16 @@ const WRITE2 = [
  {w:"并且",s:"他很聪明，并且很努力。"},
  {w:"尽管",s:"尽管很累，他还是完成了工作。"}
 ];
+
+// Starter words (unit 0) — [word, pinyin, POS, English meaning, unit]
+VOCAB.push(
+["爱情","àiqíng","n.","love (romantic)",0],["安全","ānquán","adj.","safe",0],["按时","ànshí","adv.","on time",0],
+["按照","ànzhào","prep.","according to",0],["保护","bǎohù","v.","to protect",0],["抱","bào","v.","to hug; to carry in arms",0],
+["报名","bàomíng","v.","to sign up",0],["本来","běnlái","adv.","originally",0],["笨","bèn","adj.","stupid; clumsy",0],
+["笔记本","bǐjìběn","n.","notebook",0],["毕业","bìyè","v.","to graduate",0],["遍","biàn","m.","times (whole action)",0],
+["表格","biǎogé","n.","form; table",0],["表扬","biǎoyáng","v.","to praise",0],["饼干","bǐnggān","n.","biscuit; cookie",0],
+["博士","bóshì","n.","PhD; doctor",0],["不但","bùdàn","conj.","not only",0],["不得不","bùdébù","adv.","have no choice but to",0],
+["不管","bùguǎn","conj.","no matter (what)",0],["参观","cānguān","v.","to visit; to tour",0],["尝","cháng","v.","to taste",0],
+["长城","Chángchéng","n.","the Great Wall",0],["长江","Chángjiāng","n.","Yangtze River",0],["场","chǎng","m.","(for events, games)",0],
+["吵","chǎo","v./adj.","to quarrel; noisy",0],["诚实","chéngshí","adj.","honest",0],["成为","chéngwéi","v.","to become",0],
+["重新","chóngxīn","adv.","anew; again",0]);
