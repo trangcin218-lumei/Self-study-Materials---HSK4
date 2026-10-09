@@ -27,7 +27,7 @@ main{max-width:1050px;margin:0 auto;padding:16px}
 .fc{font-size:2.8rem;text-align:center;padding:46px 10px;cursor:pointer;background:#fff;border:2px solid #d6ebfb;border-radius:20px;margin:10px 0}
 .row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:2px dashed var(--grey)}.row .w{font-size:1.6rem;min-width:100px}.row .m{flex:1}
 .opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 14px;border:2px solid var(--skyb);border-radius:16px;background:#fff;cursor:pointer;font-weight:700}
-.ok{background:#c4f1d4!important;border-color:#2f9a5d!important}.no{background:#ffd5d5!important;border-color:#d05a5a!important}
+.sel{background:#dbe3ff!important;border-color:var(--acc)!important}.qn{font-weight:800;color:var(--acc);margin-top:6px}.ok{background:#c4f1d4!important;border-color:#2f9a5d!important}.no{background:#ffd5d5!important;border-color:#d05a5a!important}
 .item{margin:14px 0;padding-bottom:10px;border-bottom:2px dashed var(--grey)}.qq{font-size:1.25rem;margin-bottom:6px}
 input,textarea,select{background:#fff;border:2px solid var(--skyb);border-radius:14px;padding:8px 12px;width:100%;margin:4px 0}
 select.bub{width:auto;max-width:90vw}
@@ -42,7 +42,7 @@ nav button.on span{font-size:1.9rem;background:#fff;border:3px solid var(--grey)
 <select class="bub" id="unit" onchange="U=this.value;pos=0;go(V)"></select>
 <button class="bub" onclick="go('notes')" title="Ghi chú">📁</button><button class="bub" onclick="go('acct')" id="usr">👤</button></header>
 <main id="m"></main><nav id="nav"></nav>
-<script src="data.js"></script><script src="vocab_data.js"></script><script src="grammar_data.js"></script><script src="exam_data.js"></script>
+<script src="data.js"></script><script src="vocab_data.js"></script><script src="grammar_data.js"></script><script src="exam_data.js"></script><script src="exam_tests.js"></script>
 <script>
 
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -77,7 +77,7 @@ const EMPTY=(n=1)=>`<div class="card">Chưa có từ nào (cần tối thiểu $
 // ---- generic multiple choice ----
 function mcq(id,qs){MQ[id]=qs;$(id).innerHTML=qs.map((x,i)=>`<div class="item"><div class="qq">${x.q}</div>${x.o.map((o,j)=>`<button class="opt" onclick="pa('${id}',${i},${j},this)">${esc(o)}</button>`).join('')}</div>`).join('')||'<small>Phần này chưa có bài tập.</small>'}
 function pa(id,i,j,b){const x=MQ[id][i];if(x.d)return;x.d=1;const ok=x.o[j]==x.a;track('qa');if(ok){track('qc');if(x.w)mark(x.w,1)}b.classList.add(ok?'ok':'no');if(!ok)[...b.parentNode.querySelectorAll('.opt')].find(e=>e.textContent==x.a).classList.add('ok');if(x.why)b.parentNode.insertAdjacentHTML('beforeend','<p>💬 '+x.why+'</p>')}
-function vq(list,n){const P=all();return shuf(list).slice(0,n).map(v=>({q:`<b style="font-size:1.7rem">${v.w}</b> <small>${v.p}</small>`,a:v.m,w:v.w,o:shuf([v.m,...shuf(P.filter(x=>x.m!=v.m)).slice(0,3).map(x=>x.m)])}))}
+function vq(list,n){const P=all();return shuf(list).slice(0,n).map(v=>({q:`<b style="font-size:1.7rem">${v.w}</b>`,a:v.m,w:v.w,o:shuf([v.m,...shuf(P.filter(x=>x.m!=v.m)).slice(0,3).map(x=>x.m)])}))}
 function keyOf(h){const m=(h.match(/^[^A-Za-z\u00C0-\u1EF9]*/)||[''])[0];return m.split(/[。\.…\+\s\/（）()，,]+/).filter(x=>/[\u4e00-\u9fff]/.test(x)).sort((a,b)=>b.length-a.length)[0]||''}
 function cloze(u){const pts=GRAMMAR.filter(g=>g[0]==u),keys=pts.map(g=>keyOf(g[1])),allk=[...new Set(GRAMMAR.map(g=>keyOf(g[1])).filter(Boolean))],qs=[];
  pts.forEach((g,i)=>{const k=keys[i];if(!k)return;const ss=g[2].split('\n').flatMap(l=>l.split(/(?<=[。？！])/)).map(s=>s.replace(/^[AB][：:]\s*/,'').trim()).filter(s=>/^[\u4e00-\u9fff，。？！、“”：；（）·…—\s]+$/.test(s)&&s.length>=8&&s.length<=45&&s.split(k).length==2);
@@ -102,14 +102,16 @@ cards(){const P=pool();if(!P.length)return $('m').innerHTML=EMPTY();const v=P[po
  <button class="cta" onclick="speak('${v.w}')">🔊</button> <button class="cta" onclick="mark('${v.w}',1);pos++;flip=false;go('cards')">Đã thuộc ✓</button> <button class="cta" style="background:#8aa" onclick="pos++;flip=false;go('cards')">Học lại</button></div>`},
 gram(){const q=($('gq')||{value:''}).value||'';$('m').innerHTML=`<div class="card"><input id="gq" placeholder="Tìm điểm ngữ pháp…" oninput="gs()" value="${esc(q)}"></div><div id="gl"></div>`;gs()},
 quiz(){const P=pool();if(P.length<4)return $('m').innerHTML=EMPTY(4);$('m').innerHTML=`<div class="card sky">${note()}<h3 style="margin:0">🧠 Trắc nghiệm</h3><div id="qz"></div><button class="cta" onclick="go('quiz')">Bộ câu hỏi mới →</button></div>`;mcq('qz',vq(P,5))},
-exam(){const li=a=>a.map(t=>`<li style="margin:4px 0">${t}</li>`).join('');
- $('m').innerHTML=`<div class="card sky"><h2 style="margin:0">🎯 Luyện thi HSK4: Viết &amp; Đọc</h2><p>Mỗi dạng bài có 4 bước: giải thích, điểm dễ sai, ví dụ, thử thách nhỏ. Làm xong thử thách là bạn nhớ bài ngay!</p><button class="pill" onclick="EXF='all';go('exam')">Tất cả</button> <button class="pill" onclick="EXF='Viết';go('exam')">✍️ Viết</button> <button class="pill" onclick="EXF='Đọc';go('exam')">📖 Đọc</button></div>`+
- EXAM.map((s,i)=>EXF!='all'&&EXF!=s.part?'':`<div class="card"><small>${s.part=='Viết'?'✍️ PHẦN VIẾT':'📖 PHẦN ĐỌC'} · Dạng ${i+1}</small><h2 style="margin:4px 0 10px">${s.title}</h2>
+exam(){const li=a=>a.map(t=>`<li style="margin:4px 0">${t}</li>`).join(''),T_=S.tests||{};
+ let o=`<div class="card sky"><h2 style="margin:0">🎯 Luyện thi HSK4: Viết &amp; Đọc</h2><p>Học từng dạng bài theo 4 bước, rồi làm các bộ đề thi thử (10 đề, mỗi đề 20 câu).</p><button class="cta" onclick="EXM='learn';go('exam')">📚 Học dạng bài</button> <button class="cta" onclick="EXM='list';go('exam')">📝 Đề thi thử</button></div>`;
+ if(EXM=='list')o+=`<div class="card"><h3 style="margin-top:0">📝 10 đề thi thử — mỗi đề 20 câu</h3><div class="tiles" style="margin-top:0">${TESTS.map((t,n)=>`<div class="card sky tile" style="min-height:80px;padding-right:18px" onclick="TN=${n};EXM='run';go('exam')">Đề số ${n+1}<br><small>${T_[n]?`Điểm cao nhất: ${T_[n].best}/20`:'Chưa làm'}</small></div>`).join('')}</div></div>`;
+ else if(EXM=='run'){const t=TESTS[TN];let k=0;o+=`<div id="tres"></div><div class="card"><h2 style="margin:0">${t.title}</h2><small>20 câu · làm hết rồi bấm “Nộp bài” để chấm điểm. Câu xếp cụm từ có thể có cách xếp hợp lý khác; đáp án là câu gốc trong giáo trình.</small></div>`+
+  t.parts.map((p,pi)=>`<div class="card"><h3 style="margin-top:0">${p.name}</h3>${p.q.map((q,j)=>`<div class="qn">Câu ${++k}</div>`+qh(`t${TN}_${pi}_${j}`,q,'test')).join('')}</div>`).join('')+`<p style="text-align:center"><button class="cta" id="subb" onclick="submitTest(${TN})">Nộp bài</button></p>`}
+ else o+=EXAM.map((s,i)=>{if(EXF!='all'&&EXF!=s.part)return'';const items=[nq(s.c),...(EXTRA[i]||[])];return `<div class="card"><small>${s.part=='Viết'?'✍️ PHẦN VIẾT':'📖 PHẦN ĐỌC'} · Dạng ${i+1}</small><h2 style="margin:4px 0 10px">${s.title}</h2>
  <h3>💡 GIẢI THÍCH BÌNH DÂN</h3><ul>${li(s.g)}</ul><h3>⚠️ ĐIỂM DỄ SAI</h3><ul>${li(s.e)}</ul><h3>🏃 VÍ DỤ THỰC TẾ</h3>
  ${s.x.map(x=>`<div class="stat" style="display:block;font-weight:700"><small>${x[0]}</small><br><span style="font-size:1.35rem">${x[1]}</span><br><small>${x[2]}</small><br>→ ${x[3]}</div>`).join('')}
- <div class="card sky" style="margin:12px 0 0"><h3 style="margin-top:0">📝 THỬ THÁCH NHỎ</h3><div id="ch${i}">${chall(s.c,i)}</div></div>
- ${s.part=='Viết'?`<p><button class="pill" onclick="go('write')">✍️ Làm thêm bài xếp câu &amp; viết câu</button></p>`:''}</div>`).join('');
- EXAM.forEach((s,i)=>{if(s.c.type=='mcq'&&$('ch'+i))mcq('ch'+i,[{q:s.c.q,o:s.c.o,a:s.c.a,why:s.c.why}])})},
+ <div class="card sky" style="margin:12px 0 0"><h3 style="margin-top:0">📝 THỬ THÁCH NHỎ (${items.length} câu)</h3>${items.map((q,j)=>`<div class="qn">Câu ${j+1}</div>`+qh(`s${i}_${j}`,q,'learn')).join('')}</div></div>`}).join('');
+ $('m').innerHTML=o},
 write(){cur=WRITE1.map(()=>[]);
  $('m').innerHTML=`<div class="card sky"><h3>Phần 1: Sắp xếp thành câu hoàn chỉnh</h3>`+WRITE1.map((x,i)=>`<div class="item"><div id="p${i}">${shuf(x.w).map(w=>`<button class="pill" style="font-size:1.2rem;margin:3px" onclick="pk(${i},this)">${w}</button>`).join('')}</div><div id="o${i}" style="min-height:36px;border-bottom:3px solid var(--acc);font-size:1.3rem"></div><button class="pill" onclick="ck(${i})">Kiểm tra</button> <button class="pill" onclick="go('write')">Làm lại</button> <span id="r${i}"></span></div>`).join('')+`</div><div class="card sky"><h3>Phần 2: Viết câu với từ cho sẵn</h3>`+WRITE2.map(x=>`<div class="item"><b style="font-size:1.4rem">${x.w}</b><textarea rows="2"></textarea><button class="pill" onclick="this.nextElementSibling.hidden=false;track('wr')">Xem câu mẫu</button><span hidden> ${x.s}</span></div>`).join('')+'</div>'},
 notes(){const k=U=='all'?'general':U;$('m').innerHTML=`<div class="card"><h3>Ghi chú — ${k=='general'?'Chung':'Bài '+k}</h3><textarea rows="12" oninput="S.notes['${k}']=this.value;save()">${esc(S.notes[k]||'')}</textarea></div>`},
@@ -124,12 +126,31 @@ function gs(){const s=$('gq').value.toLowerCase(),items=GRAMMAR.filter(g=>(U=='a
  items.forEach(g=>{if(g[0]!=last){if(last)o+=ex(last);last=g[0];us.push(last);const l=LESSONS[last-1];o+=`<h3 style="margin:18px 4px 6px">Bài ${l[0]}: ${l[1]} <small style="color:var(--mut)">${l[2]}</small></h3>`}
   o+=`<details class="card" style="padding:12px 18px;margin-bottom:8px"><summary style="font-weight:800;font-size:1.15rem;cursor:pointer">${esc(g[1])}</summary><div style="white-space:pre-wrap;line-height:1.8;margin-top:8px">${esc(g[2])}</div></details>`});
  if(last)o+=ex(last);$('gl').innerHTML=o||EMPTY();if(!s)us.forEach(u=>mcq('ex'+u,cloze(u)))}
-let EXF='all';const XO={};
-function chall(c,i){if(c.type=='order')return `<p class="qq">${c.q}</p><div id="xp${i}">${shuf(c.w).map(w=>`<button class="pill" style="font-size:1.2rem;margin:3px" onclick="xpk(${i},this)">${w}</button>`).join('')}</div><div id="xo${i}" style="min-height:36px;border-bottom:3px solid var(--acc);font-size:1.3rem"></div><button class="pill" onclick="xck(${i})">Kiểm tra</button> <button class="pill" onclick="xrs(${i})">Làm lại</button><p id="xr${i}"></p>`;
- if(c.type=='free')return `<p class="qq">${c.q}</p><textarea rows="2"></textarea><div><button class="pill" onclick="$('fm${i}').hidden=false">Xem câu mẫu</button> <button class="pill" onclick="track('wr');this.textContent='✔ Đã ghi nhận'">Mình viết đúng rồi ✓</button></div><p id="fm${i}" hidden>Câu mẫu: <b>${c.m}</b></p>`;return ''}
-function xpk(i,b){(XO[i]=XO[i]||[]).push(b.textContent);b.style.visibility='hidden';$('xo'+i).textContent=XO[i].join('')}
-function xrs(i){XO[i]=[];$('xo'+i).textContent='';$('xr'+i).textContent='';$('xp'+i).querySelectorAll('button').forEach(b=>b.style.visibility='visible')}
-function xck(i){const c=EXAM[i].c,f=s=>s.replace(/[，。？！、\s]/g,''),ok=f((XO[i]||[]).join(''))==f(c.a);$('xr'+i).innerHTML=(ok?'✔ Chính xác! ':'✘ Đáp án: '+c.a+'。 ')+'💬 '+c.why;track('qa');if(ok){track('qc');track('wr')}}
+let EXF='all',EXM='learn',TN=0;const QD={},QM={},QS={},QX={};
+const nq=c=>c.type=='order'?{t:'order',w:c.w,a:c.a,why:c.why}:c.type=='free'?{t:'free',q:c.q,m:c.m}:{t:'mcq',q:c.q,o:c.o,a:c.a,why:c.why};
+const nm=s=>s.replace(/[，。？！、\s]/g,'');
+function qh(id,q,mode){QD[id]=q;QM[id]=mode;QS[id]=q.t=='order'?[]:null;delete QX[id];const fb='<p class="fb" style="margin:6px 0"></p>';
+ if(q.t=='mcq')return `<div class="item" id="${id}"><div class="qq">${q.q}</div>${q.o.map((o,j)=>`<button class="opt" onclick="qa_('${id}',${j},this)">${esc(o)}</button>`).join('')}${fb}</div>`;
+ if(q.t=='order')return `<div class="item" id="${id}"><div class="qq">Xếp các cụm từ thành câu hoàn chỉnh:</div><div class="pl">${shuf(q.w).map(w=>`<button class="pill" style="font-size:1.15rem;margin:3px" onclick="qo_('${id}',this)">${w}</button>`).join('')}</div><div class="ou" style="min-height:36px;border-bottom:3px solid var(--acc);font-size:1.3rem"></div>${mode=='learn'?`<button class="pill" onclick="qk_('${id}')">Kiểm tra</button> `:''}<button class="pill" onclick="qr_('${id}')">Làm lại</button>${fb}</div>`;
+ return `<div class="item" id="${id}"><div class="qq">${q.q}</div><textarea rows="2"></textarea><label style="display:block;margin:4px 0"><input type="checkbox" style="width:auto" onchange="if(this.checked&&QM['${id}']=='learn')track('wr')"> Mình tự chấm: đã viết đúng</label>${mode=='learn'?`<button class="pill" onclick="qm_('${id}')">Xem câu mẫu</button>`:''}<p class="fb" hidden style="margin:6px 0">Câu mẫu: <b>${q.m}</b></p></div>`}
+function qa_(id,j,b){const q=QD[id],el=$(id);if(QX[id])return;
+ if(QM[id]=='test'){QS[id]=j;el.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');return}
+ QX[id]=1;const ok=q.o[j]==q.a;track('qa');if(ok)track('qc');gr_(id,ok,j)}
+function gr_(id,ok,j){const q=QD[id],el=$(id),f=el.querySelector('.fb');el.querySelectorAll('.opt').forEach((x,k)=>{if(x.textContent==q.a)x.classList.add('ok');else if(k==j)x.classList.add('no')});f.innerHTML=(ok?'✔ Chính xác! ':'✘ Chưa đúng. ')+(q.why?'💬 '+q.why:'')}
+function qo_(id,b){QS[id].push(b.textContent);b.style.visibility='hidden';$(id).querySelector('.ou').textContent=QS[id].join('')}
+function qr_(id){QS[id]=[];const el=$(id);el.querySelector('.ou').textContent='';el.querySelector('.fb').textContent='';el.querySelectorAll('.pl button').forEach(b=>b.style.visibility='visible')}
+function ok_o(id){return nm(QS[id].join(''))==nm(QD[id].a)}
+function qk_(id){const q=QD[id],ok=ok_o(id);$(id).querySelector('.fb').innerHTML=(ok?'✔ Chính xác! ':'✘ Đáp án: '+q.a+'。 ')+(q.why?'💬 '+q.why:'');if(!QX[id]){QX[id]=1;track('qa');if(ok){track('qc');track('wr')}}}
+function qm_(id){$(id).querySelector('.fb').hidden=false}
+function submitTest(n){if(QX['T'+n])return;QX['T'+n]=1;let sc=0,k=0;
+ TESTS[n].parts.forEach((p,pi)=>p.q.forEach((q,j)=>{const id=`t${n}_${pi}_${j}`,el=$(id);let ok=false;
+  if(q.t=='mcq'){ok=QS[id]!=null&&q.o[QS[id]]==q.a;gr_(id,ok,QS[id])}
+  else if(q.t=='order'){ok=ok_o(id);el.querySelector('.fb').innerHTML=(ok?'✔ Chính xác! ':'✘ Đáp án: '+q.a+'。 ')+(q.why?'💬 '+q.why:'')}
+  else{ok=el.querySelector('input[type=checkbox]').checked;el.querySelector('.fb').hidden=false}
+  if(ok)sc++;k++}));
+ S.tests=S.tests||{};const o=S.tests[n]||{best:0};S.tests[n]={best:Math.max(o.best,sc),last:sc,date:day()};track('qa',20);track('qc',sc);track('wr',0);save();
+ $('tres').innerHTML=`<div class="card peach"><h2 style="margin:0">🎉 Điểm của bạn: ${sc}/20</h2><p>${sc>=16?'Tuyệt vời! Bạn đã nắm rất chắc phần này.':sc>=10?'Khá tốt! Xem lại các câu sai (có giải thích bên dưới) rồi làm lại nhé.':'Đừng nản! Học lại dạng bài ở tab “Học dạng bài” rồi thử lại.'}</p><button class="cta" onclick="EXM='run';go('exam')">Làm lại đề này</button> <button class="cta" onclick="EXM='list';go('exam')">Chọn đề khác</button></div>`;
+ $('subb').disabled=true;scrollTo(0,0)}
 function pk(i,b){cur[i].push(b.textContent);b.style.visibility='hidden';$('o'+i).textContent=cur[i].join('')}
 function ck(i){const f=s=>s.replace(/[，。？！、\s]/g,''),ok=f(cur[i].join(''))==f(WRITE1[i].a);$('r'+i).innerHTML=ok?'✔ Chính xác':`✘ Đáp án: ${WRITE1[i].a}。`;if(ok)track('wr')}
 function addw(){const a=['a1','a2','a3'].map(i=>$(i).value.trim());if(!a[0]||!a[2])return alert('Vui lòng nhập chữ Hán và nghĩa');S.mine.push([a[0],a[1],'',a[2],+$('a4').value||0]);save();alert('Đã thêm');go('add')}
