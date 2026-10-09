@@ -42,7 +42,7 @@ nav button.on span{font-size:1.9rem;background:#fff;border:3px solid var(--grey)
 <select class="bub" id="unit" onchange="U=this.value;pos=0;go(V)"></select>
 <button class="bub" onclick="go('notes')" title="Ghi chú">📁</button><button class="bub" onclick="go('acct')" id="usr">👤</button></header>
 <main id="m"></main><nav id="nav"></nav>
-<script src="data.js"></script><script src="vocab_data.js"></script><script src="grammar_data.js"></script>
+<script src="data.js"></script><script src="vocab_data.js"></script><script src="grammar_data.js"></script><script src="exam_data.js"></script>
 <script>
 
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -67,7 +67,7 @@ const shuf=a=>[...a].sort(()=>Math.random()-.5);
 addEventListener('click',()=>lastAct=Date.now());addEventListener('keydown',()=>lastAct=Date.now());
 setInterval(()=>{if(!document.hidden&&Date.now()-lastAct<120000){T().m++;save()}},60000);
 function fs(d){S.font=Math.max(80,Math.min(160,S.font+d));save();paint()}
-const NAV=[['home','🐾','Trang chủ'],['vocab','📘','Từ vựng'],['cards','🃏','Thẻ nhớ'],['gram','🧩','Ngữ pháp'],['quiz','🧠','Trắc nghiệm'],['write','✍️','Luyện viết'],['notes','📝','Ghi chú'],['add','➕','Thêm từ'],['acct','👤','Tài khoản']];
+const NAV=[['home','🐾','Trang chủ'],['vocab','📘','Từ vựng'],['cards','🃏','Thẻ nhớ'],['gram','🧩','Ngữ pháp'],['quiz','🧠','Trắc nghiệm'],['exam','🎯','Luyện thi'],['notes','📝','Ghi chú'],['add','➕','Thêm từ'],['acct','👤','Tài khoản']];
 function paint(){document.body.className='t'+(S.th||0);document.documentElement.style.fontSize=S.font+'%';$('fz').textContent=S.font+'%';$('usr').textContent='👤 '+(CUR=='guest'?'Đăng nhập':CUR);
  $('unit').innerHTML='<option value="all">Tất cả các bài</option><option value="0">Danh sách từ</option>'+LESSONS.map(l=>`<option value="${l[0]}">Bài ${l[0]}: ${l[1]} — ${l[2]}</option>`).join('');$('unit').value=U;
  $('nav').innerHTML=NAV.map(n=>`<button class="${V==n[0]?'on':''}" onclick="go('${n[0]}')"><span>${n[1]}</span>${n[2]}</button>`).join('')}
@@ -76,7 +76,7 @@ const lc=()=>all().filter(v=>S.learned[v.w]).length;
 const EMPTY=(n=1)=>`<div class="card">Chưa có từ nào (cần tối thiểu ${n} từ).</div>`;
 // ---- generic multiple choice ----
 function mcq(id,qs){MQ[id]=qs;$(id).innerHTML=qs.map((x,i)=>`<div class="item"><div class="qq">${x.q}</div>${x.o.map((o,j)=>`<button class="opt" onclick="pa('${id}',${i},${j},this)">${esc(o)}</button>`).join('')}</div>`).join('')||'<small>Phần này chưa có bài tập.</small>'}
-function pa(id,i,j,b){const x=MQ[id][i];if(x.d)return;x.d=1;const ok=x.o[j]==x.a;track('qa');if(ok){track('qc');if(x.w)mark(x.w,1)}b.classList.add(ok?'ok':'no');if(!ok)[...b.parentNode.querySelectorAll('.opt')].find(e=>e.textContent==x.a).classList.add('ok')}
+function pa(id,i,j,b){const x=MQ[id][i];if(x.d)return;x.d=1;const ok=x.o[j]==x.a;track('qa');if(ok){track('qc');if(x.w)mark(x.w,1)}b.classList.add(ok?'ok':'no');if(!ok)[...b.parentNode.querySelectorAll('.opt')].find(e=>e.textContent==x.a).classList.add('ok');if(x.why)b.parentNode.insertAdjacentHTML('beforeend','<p>💬 '+x.why+'</p>')}
 function vq(list,n){const P=all();return shuf(list).slice(0,n).map(v=>({q:`<b style="font-size:1.7rem">${v.w}</b> <small>${v.p}</small>`,a:v.m,w:v.w,o:shuf([v.m,...shuf(P.filter(x=>x.m!=v.m)).slice(0,3).map(x=>x.m)])}))}
 function keyOf(h){const m=(h.match(/^[^A-Za-z\u00C0-\u1EF9]*/)||[''])[0];return m.split(/[。\.…\+\s\/（）()，,]+/).filter(x=>/[\u4e00-\u9fff]/.test(x)).sort((a,b)=>b.length-a.length)[0]||''}
 function cloze(u){const pts=GRAMMAR.filter(g=>g[0]==u),keys=pts.map(g=>keyOf(g[1])),allk=[...new Set(GRAMMAR.map(g=>keyOf(g[1])).filter(Boolean))],qs=[];
@@ -95,13 +95,21 @@ home(){const A=all(),L=lc(),QUO=["Một ngôn ngữ khác là một cách nhìn 
  <div class="grid" style="margin:10px 0"><div class="stat">🌱 Từ mới<b>${t.w}</b></div><div class="stat">🧠 Câu đúng<b>${t.qc}/${t.qa}</b></div><div class="stat">✍️ Luyện viết<b>${t.wr}</b></div><div class="stat">⏱ Số phút<b>${t.m}</b></div><div class="stat">⭐ XP<b>${xp(t)}</b></div></div>
  <small>XP 7 ngày gần nhất</small><div class="bars">${days.map(d=>`<div><i style="height:${xp(d[1])/mx*70}px"></i>${d[0].slice(5)}<br>${xp(d[1])}</div>`).join('')}</div></div>
  <div class="card peach" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div style="flex:1;min-width:240px"><small style="color:#7c5cd6;font-weight:800">HỌC CÙNG BẠN BÈ</small><h2 style="margin:4px 0">Bảng xếp hạng tuần</h2><div class="stat" style="font-weight:600">${lb.length?lb.map((x,i)=>`${['🥇','🥈','🥉','4.','5.'][i]} ${esc(x[0])} — ${x[1]} XP`).join('<br>'):'Tuần này chưa có XP 🌱'}</div></div><button class="cta" onclick="go('acct')">${CUR=='guest'?'Log in 登录':'👤 '+esc(CUR)}</button></div>
- <div class="tiles">${[['cards','Thẻ nhớ','golden'],['quiz','Trắc nghiệm','gears'],['notes','Ghi chú','beagle'],['add','Thêm từ','star']].map(t=>`<div class="card tile" onclick="go('${t[0]}')">${t[1]}<img src="img/${t[2]}.png" alt=""></div>`).join('')}</div>`},
+ <div class="tiles">${[['cards','Thẻ nhớ','golden'],['quiz','Trắc nghiệm','gears'],['notes','Ghi chú','beagle'],['add','Thêm từ','star'],['exam','Luyện thi HSK4','pug']].map(t=>`<div class="card tile" onclick="go('${t[0]}')">${t[1]}<img src="img/${t[2]}.png" alt=""></div>`).join('')}</div>`},
 vocab(){vmax=60;$('m').innerHTML=`<div class="card"><input id="s" placeholder="Tìm kiếm (chữ Hán / pinyin / nghĩa)…" oninput="vmax=60;vl()"><div id="vl"></div></div><div class="card sky"><h3 style="margin:0">✏️ Bài tập — Từ vựng</h3><div id="vp"></div><button class="cta" onclick="vp()">Bộ câu hỏi mới</button></div>`;vl();vp()},
 cards(){const P=pool();if(!P.length)return $('m').innerHTML=EMPTY();const v=P[pos%P.length];
  $('m').innerHTML=`<div class="card">${note()}<small>${pos%P.length+1}/${P.length} · bấm vào thẻ để lật</small><div class="fc" onclick="flip=!flip;go('cards')">${flip?`${v.p}<br><small>${v.t||''} ${esc(v.m)}</small>`:v.w}</div>
  <button class="cta" onclick="speak('${v.w}')">🔊</button> <button class="cta" onclick="mark('${v.w}',1);pos++;flip=false;go('cards')">Đã thuộc ✓</button> <button class="cta" style="background:#8aa" onclick="pos++;flip=false;go('cards')">Học lại</button></div>`},
 gram(){const q=($('gq')||{value:''}).value||'';$('m').innerHTML=`<div class="card"><input id="gq" placeholder="Tìm điểm ngữ pháp…" oninput="gs()" value="${esc(q)}"></div><div id="gl"></div>`;gs()},
 quiz(){const P=pool();if(P.length<4)return $('m').innerHTML=EMPTY(4);$('m').innerHTML=`<div class="card sky">${note()}<h3 style="margin:0">🧠 Trắc nghiệm</h3><div id="qz"></div><button class="cta" onclick="go('quiz')">Bộ câu hỏi mới →</button></div>`;mcq('qz',vq(P,5))},
+exam(){const li=a=>a.map(t=>`<li style="margin:4px 0">${t}</li>`).join('');
+ $('m').innerHTML=`<div class="card sky"><h2 style="margin:0">🎯 Luyện thi HSK4: Viết &amp; Đọc</h2><p>Mỗi dạng bài có 4 bước: giải thích, điểm dễ sai, ví dụ, thử thách nhỏ. Làm xong thử thách là bạn nhớ bài ngay!</p><button class="pill" onclick="EXF='all';go('exam')">Tất cả</button> <button class="pill" onclick="EXF='Viết';go('exam')">✍️ Viết</button> <button class="pill" onclick="EXF='Đọc';go('exam')">📖 Đọc</button></div>`+
+ EXAM.map((s,i)=>EXF!='all'&&EXF!=s.part?'':`<div class="card"><small>${s.part=='Viết'?'✍️ PHẦN VIẾT':'📖 PHẦN ĐỌC'} · Dạng ${i+1}</small><h2 style="margin:4px 0 10px">${s.title}</h2>
+ <h3>💡 GIẢI THÍCH BÌNH DÂN</h3><ul>${li(s.g)}</ul><h3>⚠️ ĐIỂM DỄ SAI</h3><ul>${li(s.e)}</ul><h3>🏃 VÍ DỤ THỰC TẾ</h3>
+ ${s.x.map(x=>`<div class="stat" style="display:block;font-weight:700"><small>${x[0]}</small><br><span style="font-size:1.35rem">${x[1]}</span><br><small>${x[2]}</small><br>→ ${x[3]}</div>`).join('')}
+ <div class="card sky" style="margin:12px 0 0"><h3 style="margin-top:0">📝 THỬ THÁCH NHỎ</h3><div id="ch${i}">${chall(s.c,i)}</div></div>
+ ${s.part=='Viết'?`<p><button class="pill" onclick="go('write')">✍️ Làm thêm bài xếp câu &amp; viết câu</button></p>`:''}</div>`).join('');
+ EXAM.forEach((s,i)=>{if(s.c.type=='mcq'&&$('ch'+i))mcq('ch'+i,[{q:s.c.q,o:s.c.o,a:s.c.a,why:s.c.why}])})},
 write(){cur=WRITE1.map(()=>[]);
  $('m').innerHTML=`<div class="card sky"><h3>Phần 1: Sắp xếp thành câu hoàn chỉnh</h3>`+WRITE1.map((x,i)=>`<div class="item"><div id="p${i}">${shuf(x.w).map(w=>`<button class="pill" style="font-size:1.2rem;margin:3px" onclick="pk(${i},this)">${w}</button>`).join('')}</div><div id="o${i}" style="min-height:36px;border-bottom:3px solid var(--acc);font-size:1.3rem"></div><button class="pill" onclick="ck(${i})">Kiểm tra</button> <button class="pill" onclick="go('write')">Làm lại</button> <span id="r${i}"></span></div>`).join('')+`</div><div class="card sky"><h3>Phần 2: Viết câu với từ cho sẵn</h3>`+WRITE2.map(x=>`<div class="item"><b style="font-size:1.4rem">${x.w}</b><textarea rows="2"></textarea><button class="pill" onclick="this.nextElementSibling.hidden=false;track('wr')">Xem câu mẫu</button><span hidden> ${x.s}</span></div>`).join('')+'</div>'},
 notes(){const k=U=='all'?'general':U;$('m').innerHTML=`<div class="card"><h3>Ghi chú — ${k=='general'?'Chung':'Bài '+k}</h3><textarea rows="12" oninput="S.notes['${k}']=this.value;save()">${esc(S.notes[k]||'')}</textarea></div>`},
@@ -116,6 +124,12 @@ function gs(){const s=$('gq').value.toLowerCase(),items=GRAMMAR.filter(g=>(U=='a
  items.forEach(g=>{if(g[0]!=last){if(last)o+=ex(last);last=g[0];us.push(last);const l=LESSONS[last-1];o+=`<h3 style="margin:18px 4px 6px">Bài ${l[0]}: ${l[1]} <small style="color:var(--mut)">${l[2]}</small></h3>`}
   o+=`<details class="card" style="padding:12px 18px;margin-bottom:8px"><summary style="font-weight:800;font-size:1.15rem;cursor:pointer">${esc(g[1])}</summary><div style="white-space:pre-wrap;line-height:1.8;margin-top:8px">${esc(g[2])}</div></details>`});
  if(last)o+=ex(last);$('gl').innerHTML=o||EMPTY();if(!s)us.forEach(u=>mcq('ex'+u,cloze(u)))}
+let EXF='all';const XO={};
+function chall(c,i){if(c.type=='order')return `<p class="qq">${c.q}</p><div id="xp${i}">${shuf(c.w).map(w=>`<button class="pill" style="font-size:1.2rem;margin:3px" onclick="xpk(${i},this)">${w}</button>`).join('')}</div><div id="xo${i}" style="min-height:36px;border-bottom:3px solid var(--acc);font-size:1.3rem"></div><button class="pill" onclick="xck(${i})">Kiểm tra</button> <button class="pill" onclick="xrs(${i})">Làm lại</button><p id="xr${i}"></p>`;
+ if(c.type=='free')return `<p class="qq">${c.q}</p><textarea rows="2"></textarea><div><button class="pill" onclick="$('fm${i}').hidden=false">Xem câu mẫu</button> <button class="pill" onclick="track('wr');this.textContent='✔ Đã ghi nhận'">Mình viết đúng rồi ✓</button></div><p id="fm${i}" hidden>Câu mẫu: <b>${c.m}</b></p>`;return ''}
+function xpk(i,b){(XO[i]=XO[i]||[]).push(b.textContent);b.style.visibility='hidden';$('xo'+i).textContent=XO[i].join('')}
+function xrs(i){XO[i]=[];$('xo'+i).textContent='';$('xr'+i).textContent='';$('xp'+i).querySelectorAll('button').forEach(b=>b.style.visibility='visible')}
+function xck(i){const c=EXAM[i].c,f=s=>s.replace(/[，。？！、\s]/g,''),ok=f((XO[i]||[]).join(''))==f(c.a);$('xr'+i).innerHTML=(ok?'✔ Chính xác! ':'✘ Đáp án: '+c.a+'。 ')+'💬 '+c.why;track('qa');if(ok){track('qc');track('wr')}}
 function pk(i,b){cur[i].push(b.textContent);b.style.visibility='hidden';$('o'+i).textContent=cur[i].join('')}
 function ck(i){const f=s=>s.replace(/[，。？！、\s]/g,''),ok=f(cur[i].join(''))==f(WRITE1[i].a);$('r'+i).innerHTML=ok?'✔ Chính xác':`✘ Đáp án: ${WRITE1[i].a}。`;if(ok)track('wr')}
 function addw(){const a=['a1','a2','a3'].map(i=>$(i).value.trim());if(!a[0]||!a[2])return alert('Vui lòng nhập chữ Hán và nghĩa');S.mine.push([a[0],a[1],'',a[2],+$('a4').value||0]);save();alert('Đã thêm');go('add')}
